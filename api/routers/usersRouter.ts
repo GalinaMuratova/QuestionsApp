@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import auth from "../middleware/auth";
+import auth, { RequestWithUser } from "../middleware/auth";
 import permit from "../middleware/permit";
 import { imagesUpload } from "../multer";
 import User from "../models/User";
@@ -27,6 +27,16 @@ usersRouter.get('/:id', auth, permit('admin'), async (req, res, next) => {
         return next(e);
     }
 });
+
+usersRouter.get('/one/profile', auth, async (req, res, next) => {
+    try {
+        const user = (req as RequestWithUser).user;
+        return res.send(user);
+    } catch (e) {
+        next(e);
+    }
+});
+
 
 usersRouter.post('/', imagesUpload.single('image'), async(req, res, next) => {
     try {
@@ -101,6 +111,51 @@ usersRouter.post('/sessions', async (req, res, next) => {
       }
 });
 
+usersRouter.put('/:id', auth, permit('admin'), imagesUpload.single('image'), async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
+        user.middleName = req.body.middleName;
+        user.birthYear = req.body.birthYear;
+        user.phoneNumber = req.body.phoneNumber;
+        user.image = req.file ? req.file.filename : user.image;
+        user.userLogin = req.body.userLogin;
+        await user.save();
+        return res.send(user);
+    } catch (e) {
+        if (e instanceof mongoose.Error.ValidationError) {
+            return res.status(400).send(e);
+        }
+        return next(e);
+    }
+});
+
+usersRouter.patch('/profile/reset-password', auth, async (req, res, next) => {
+    try {
+        const user = (req as RequestWithUser).user;
+        user.password = req.body.password;
+        await user.save();
+        return res.send({ message: 'Password reset' });
+    } catch (e) {
+        next(e);
+    }
+});
+
+usersRouter.patch('/profile/edit-photo', auth, imagesUpload.single('image'), async (req, res, next) => {
+    try {
+        const user = (req as RequestWithUser).user;
+        user.image = req.file ? req.file.filename : user.image;
+        await user.save();
+        return res.send({ message: 'Profile photo updated' });
+    } catch (e) {
+        next(e);
+    }
+});
+
 usersRouter.patch('/reset-password/:id', auth, permit('admin'), async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
@@ -129,29 +184,6 @@ usersRouter.patch('/:id/authorize', auth, permit('admin'), async (req, res, next
     }
 });
 
-usersRouter.put('/:id', auth, permit('admin'), imagesUpload.single('image'), async (req, res, next) => {
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).send({ error: 'User not found' });
-        }
-        user.firstName = req.body.firstName;
-        user.lastName = req.body.lastName;
-        user.middleName = req.body.middleName;
-        user.birthYear = req.body.birthYear;
-        user.phoneNumber = req.body.phoneNumber;
-        user.image = req.file ? req.file.filename : user.image;
-        user.userLogin = req.body.userLogin;
-        await user.save();
-        return res.send(user);
-    } catch (e) {
-        if (e instanceof mongoose.Error.ValidationError) {
-            return res.status(400).send(e);
-        }
-        return next(e);
-    }
-});
-
 usersRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
@@ -164,5 +196,27 @@ usersRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
         return next(e);
     }
 });
+usersRouter.delete('/change/sessions', async (req, res, next) => {
+    try {
+      const token = req.get('Authorization');
+      
+      if (!token) {
+        return res.status(400).send({ error: 'No token' });
+    }
+  
+      const user = await User.findOne({ token });
+  
+      if (!user) {
+        return res.status(404).send({ error: 'User not found' });
+    }
+  
+      user.generateToken();
+      await user.save();
+  
+      return res.send({ message: 'Succes' });
+    } catch (e) {
+      next(e);
+    }
+  });
 
 export default usersRouter;
