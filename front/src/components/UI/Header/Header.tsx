@@ -14,15 +14,15 @@ const Link = styled(NavLink)({
 
 const Header = () => {
   return (
-    <AppBar position="sticky" sx={{ mb: 2 }}>
+    <AppBar position="sticky" sx={{mb: 2}}>
       <Toolbar>
-      <div style={{ paddingTop: '7px', paddingRight: '4px' }}>
-          <DeviceUnknownIcon />
+        <div style={{paddingTop: '7px', paddingRight: '4px'}}>
+          <DeviceUnknownIcon/>
         </div>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
           <Link to="/">Question forum</Link>
         </Typography>
-        <Grid item> <AnonymousMenu /></Grid>
+        <Grid item> <AnonymousMenu/></Grid>
       </Toolbar>
     </AppBar>
   );
