@@ -22,8 +22,15 @@ const QuestionSchema = new Schema({
         default: true
     },
     answers: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Answer',
+        author: {
+            type: mongoose.Types.ObjectId,
+            ref: 'User'
+        },
+        date: {
+            type: Date,
+            default: Date.now
+        },
+        title: String
     }],
 });
 

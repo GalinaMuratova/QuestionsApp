@@ -7,7 +7,17 @@ const questionsRouter = express.Router();
 
 questionsRouter.get('/', async (req,res) => {
    try {
-       const questions = await Question.find().populate('author', 'firstName').sort({ date: -1 });
+    const questions = await Question
+    .find()
+    .populate({
+        path: 'author',
+        select: 'firstName'
+    })
+    .populate({
+        path: 'answers.author',
+        select: 'firstName'
+    })
+    .sort({ date: -1 });
        return res.send(questions);
    } catch {
        return res.sendStatus(500);
@@ -48,6 +58,33 @@ questionsRouter.post('/', auth, async(req, res, next) => {
    }
 });
 
+questionsRouter.post('/:id/answers', auth, async (req, res, next) => {
+    try {
+        const user = (req as RequestWithUser).user;
+        const questionId = req.params.id;
+        const { title } = req.body;
+
+        const question = await Question.findById(questionId);
+        if (!question) {
+            return res.sendStatus(404);
+        }
+
+        const currentDate = new Date();
+        const newAnswer = {
+            author: user._id,
+            date: currentDate,
+            title: title
+        };
+        question.answers.push(newAnswer);
+        await question.save();
+
+        return res.send(question);
+    } catch (e) {
+        next(e);
+    }
+});
+
+
 questionsRouter.put('/:id', auth, async(req, res, next) => {
     try {
         const user = (req as RequestWithUser).user;
@@ -58,8 +95,6 @@ questionsRouter.put('/:id', auth, async(req, res, next) => {
         if (!question) {
             return res.sendStatus(404);
         }
-        console.log(question.author);
-        console.log(user._id);
 
         if ((question as any).author.toString() !== user._id.toString()) {
             return res.status(403).send({ error: "You cant edit this question" });
