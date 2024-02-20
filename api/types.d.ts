@@ -6,6 +6,7 @@ export interface IUser {
     phoneNumber: string;
     image: string;
     password: string;
+    passwordConfirm: string;
     token: string;
     userLogin:string;
     statusUser: boolean;

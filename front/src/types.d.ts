@@ -19,4 +19,45 @@ export interface IQuestion {
   answers: IAnswer[];
 }
 
+export interface RegisterMutation {
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  birthYear: string;
+  phoneNumber: string;
+  image: string | null;
+  password: string;
+  passwordConfirm:string;
+  userLogin:string;
+}
+
+export interface RegisterResponse {
+  user: IUser;
+  message: string;
+}
+
+export interface LoginMutation {
+  userLogin: string;
+  password: string;
+}
+
+export interface IUser {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  birthYear: Date;
+  phoneNumber: string;
+  image: string;
+  token: string;
+  userLogin:string;
+  statusUser: boolean;
+  role: 'user' | 'admin';
+}
+
+export interface ILogin{
+  exists: boolean;
+}
+
+
 

@@ -45,6 +45,10 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
         type: String,
         required: true,
     },
+    passwordConfirm: {
+        type: String,
+        required: false,
+    },
     userLogin: {
         type: String,
         required: true,

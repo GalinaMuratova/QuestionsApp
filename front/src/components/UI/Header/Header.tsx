@@ -3,6 +3,9 @@ import { AppBar, Grid, styled, Toolbar, Typography } from '@mui/material';
 import { Link as NavLink } from 'react-router-dom';
 import AnonymousMenu from './AnonymousMenu';
 import DeviceUnknownIcon from '@mui/icons-material/DeviceUnknown';
+import { useAppSelector } from '../../../app/hooks';
+import { selectUser } from '../../../features/users/usersSlice';
+import UserMenu from './UserMenu';
 
 const Link = styled(NavLink)({
   color: 'inherit',
@@ -13,6 +16,8 @@ const Link = styled(NavLink)({
 });
 
 const Header = () => {
+  const user = useAppSelector(selectUser);
+
   return (
     <AppBar position="sticky" sx={{mb: 2}}>
       <Toolbar>
@@ -22,7 +27,9 @@ const Header = () => {
         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
           <Link to="/">Question forum</Link>
         </Typography>
-        <Grid item> <AnonymousMenu/></Grid>
+        <Grid item> 
+        {user ? (<UserMenu user={user} />) : (<AnonymousMenu/>)}
+        </Grid>
       </Toolbar>
     </AppBar>
   );

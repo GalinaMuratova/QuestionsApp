@@ -37,18 +37,34 @@ usersRouter.get('/one/profile', auth, async (req, res, next) => {
     }
 });
 
-
-usersRouter.post('/', imagesUpload.single('image'), async(req, res, next) => {
+usersRouter.get('/check/login', async (req, res, next) => {
     try {
-        const user= new User({
+      const userLogin = req.query.userLogin;
+      if (!userLogin) {
+        return res.status(400).send({ error: 'UserLogin is missing' });
+      }
+      const user = await User.findOne({ userLogin });
+      if (user) {
+        return res.send({ exists: true });
+      }
+      return res.send({ exists: false });
+    } catch (e) {
+      next(e);
+    }
+  });
+  
+usersRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
+    try {
+        const user = new User({
             firstName:  req.body.firstName,
             lastName: req.body.lastName,
             middleName: req.body.middleName,
-            birthYear: req.body.birthYear,
+            birthYear: new Date(req.body.birthYear),
             phoneNumber: req.body.phoneNumber,
             image: req.file ? req.file.filename : null,
             userLogin: req.body.userLogin,
             password: req.body.password,
+            passwordConfirm: req.body.passwordConfirm,
         }); 
         user.generateToken();
         await user.save();
@@ -60,6 +76,7 @@ usersRouter.post('/', imagesUpload.single('image'), async(req, res, next) => {
         return next(e);
     }
 });
+
 
 usersRouter.post('/admin', auth, permit('admin'), imagesUpload.single('image'), async(req, res, next) => {
     try {
