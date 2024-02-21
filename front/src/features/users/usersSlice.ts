@@ -24,7 +24,11 @@ const initialState: UserState = {
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    unsetUser: (state) => {
+      state.user = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchUserLogin.pending, (state) => {
       state.fetchLoginLoading = true;
@@ -64,6 +68,7 @@ export const usersSlice = createSlice({
 });
 
 export const usersReducer = usersSlice.reducer;
+export const {unsetUser} = usersSlice.actions;
 export const selectUser = (state: RootState) => state.users.user;
 export const selectLogin = (state: RootState) => state.users.login;
 export const selectRegisterLoading = (state: RootState) => state.users.registerLoading;

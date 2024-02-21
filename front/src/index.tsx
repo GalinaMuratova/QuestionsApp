@@ -8,6 +8,9 @@ import theme from './theme';
 import { Provider } from 'react-redux';
 import { store, persistor } from './app/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import { addInterceptors } from './axiosApi';
+
+addInterceptors(store);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { IUser } from '../../../types';
+import { useAppDispatch } from '../../../app/hooks';
+import { unsetUser } from '../../../features/users/usersSlice';
+import { fetchQuestions } from '../../../features/questions/questionsThunk';
 
 interface Props {
   user: IUser;
@@ -8,6 +11,7 @@ interface Props {
 
 const UserMenu: React.FC<Props> = ({user}) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const dispatch = useAppDispatch();
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -15,11 +19,17 @@ const UserMenu: React.FC<Props> = ({user}) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogout = () => {
+    dispatch(unsetUser());
+    dispatch(fetchQuestions())
+  };
+
   let avatarImage = 'http://localhost:8000' + '/images/' + user.image;
 
   return (
     <>
-    <img
+      <img
         style={{
           width: '40px',
           height: '40px',
@@ -43,24 +53,23 @@ const UserMenu: React.FC<Props> = ({user}) => {
         onClose={handleClose}
       >
         {user.role === 'admin' ? (
-        <>
+          <>
             <MenuItem>Admin panel</MenuItem>
             <MenuItem>Add question</MenuItem>
             <MenuItem>My account</MenuItem>
-            <MenuItem>Logout</MenuItem>
-        </>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </>
         ) : (
-            <>
-                <MenuItem>My questions</MenuItem>
-                <MenuItem>My account</MenuItem>
-                <MenuItem>Logout</MenuItem>
-            </>
-            )}
+          <>
+            <MenuItem>My questions</MenuItem>
+            <MenuItem>My account</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </>
+        )}
       </Menu>
     </>
   );
 };
-
 
 
 export default UserMenu;

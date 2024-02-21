@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosApi from "../../axiosApi";
 import { ILogin, IUser, LoginMutation, RegisterMutation, RegisterResponse } from "../../types";
+import { unsetUser } from "./usersSlice";
 
 export const fetchUserLogin = createAsyncThunk<ILogin, string>(
   'users/fetchUserLogin',
@@ -36,3 +37,10 @@ export const register = createAsyncThunk<RegisterResponse, RegisterMutation>(
     }
 
   );
+
+  export const logout = createAsyncThunk<void, void>(
+    '/change/logout', 
+    async (_, { dispatch }) => {
+      await axiosApi.delete('/users/sessions');
+      dispatch(unsetUser());
+  });

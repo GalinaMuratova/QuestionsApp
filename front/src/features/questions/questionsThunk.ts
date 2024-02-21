@@ -17,3 +17,11 @@ export const fetchOneQuestion = createAsyncThunk<IQuestion, string>(
     return response.data;
   }
 );
+
+export const submitAnswer = createAsyncThunk<IQuestion, { id: string; title: string }>(
+  'questions/submitAnswer',
+  async ({ id, title }) => {
+    const response = await axiosApi.post<IQuestion>(`/questions/${id}/answers`, { title });
+    return response.data;
+  }
+);

@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useEffect } from 'react';
 import { fetchQuestions } from './questionsThunk';
 import { selectQuestions, selectQuestionsLoading } from './questionsSlice';
+import { selectUser } from '../users/usersSlice';
 
 const Link = styled(NavLink)({
   color: 'inherit',
@@ -31,6 +32,7 @@ const StyledTableCell = styled(TableCell)({
 
 const Questions = () => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
   const questions = useAppSelector(selectQuestions);
   const loading = useAppSelector(selectQuestionsLoading);
 
@@ -67,10 +69,26 @@ const Questions = () => {
                               to={'/questions/' + question._id}>
                           {question.title}
                         </Grid>
+                        {user?.role === 'admin' ? (
+                          <>
+                            {question.hidden ? (
+                              <span style={{float: 'right', color: 'red'}}>
+                              Unpublished
+                              </span>
+                            ) : (
+                              <span style={{float: 'right', color: 'gray'}}>
+                                Published
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <></>
+                        )}
                       </StyledTableCell>
                     </TableRow>
                   ))}
                 </TableBody>
+
               </Table>
             </TableContainer>
           </Grid>

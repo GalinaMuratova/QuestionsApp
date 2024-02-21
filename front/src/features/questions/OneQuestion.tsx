@@ -3,13 +3,16 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectOneQuestion, selectOneQuestionLoading } from './questionsSlice';
 import { Typography, Grid, Card, CardContent, List, Divider, CircularProgress } from '@mui/material';
-import { fetchOneQuestion } from './questionsThunk';
+import { fetchOneQuestion, submitAnswer } from './questionsThunk';
 import AnswerCard from '../../components/UI/AnswerCard/AnswerCard';
 import dayjs from 'dayjs';
+import { selectUser } from '../users/usersSlice';
+import AnswerForm from '../../components/UI/AnswerForm/AnswerForm';
 
 const OneQuestion = () => {
   const {id} = useParams();
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
   const question = useAppSelector(selectOneQuestion);
   const loading = useAppSelector(selectOneQuestionLoading);
 
@@ -18,6 +21,13 @@ const OneQuestion = () => {
       dispatch(fetchOneQuestion(id));
     }
   }, [dispatch, id]);
+
+  const handleSubmitAnswer = async (answer: string) => {
+    if (id) {
+      await dispatch(submitAnswer({id: id,title: answer}));
+      await dispatch(fetchOneQuestion(id));
+    }
+  };
 
 
   if (!question) {
@@ -52,6 +62,7 @@ const OneQuestion = () => {
                 ))
               )}
             </List>
+            {user && (<AnswerForm onSubmit={(answer: string) => handleSubmitAnswer(answer)} />)}
           </Grid>
         </Grid>
       )}
