@@ -12,8 +12,10 @@ import {
 import { Link as NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useEffect } from 'react';
-import { fetchQuestions } from './questionsThunk';
-import { selectQuestions, selectQuestionsLoading } from './questionsSlice';
+import { selectQuestions, selectQuestionsLoading } from '../questions/questionsSlice';
+import { fetchUserQuestions } from '../questions/questionsThunk';
+import { selectUser } from './usersSlice';
+
 
 const Link = styled(NavLink)({
   color: 'inherit',
@@ -29,13 +31,14 @@ const StyledTableCell = styled(TableCell)({
   },
 });
 
-const Questions = () => {
+const UserQuestions = () => {
   const dispatch = useAppDispatch();
   const questions = useAppSelector(selectQuestions);
   const loading = useAppSelector(selectQuestionsLoading);
+  const user = useAppSelector(selectUser);
 
   useEffect(() => {
-    dispatch(fetchQuestions());
+    dispatch(fetchUserQuestions());
   }, [dispatch]);
 
   return (
@@ -55,7 +58,7 @@ const Questions = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell style={{backgroundColor: 'gray', color: 'white', fontSize: '24px', textAlign: 'center'}}>
-                      All questions
+                      My questions
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -67,8 +70,24 @@ const Questions = () => {
                               to={'/questions/' + question._id}>
                           {question.title}
                         </Grid>
+                        {user ? (
+                          <>
+                            {question.hidden ? (
+                              <span style={{float: 'right', color: 'red'}}>
+                              Unpublished
+                              </span>
+                            ) : (
+                              <span style={{float: 'right', color: 'gray'}}>
+                                Published
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <></>
+                        )}
                       </StyledTableCell>
                     </TableRow>
+
                   ))}
                 </TableBody>
 
@@ -79,6 +98,6 @@ const Questions = () => {
       )}
     </>
   );
-}
+};
 
-export default Questions;
+export default UserQuestions;

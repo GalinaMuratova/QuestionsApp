@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IQuestion } from '../../types';
 import { RootState } from '../../app/store';
-import { fetchOneQuestion, fetchQuestions } from './questionsThunk';
+import { fetchOneQuestion, fetchQuestions, fetchUserQuestions } from './questionsThunk';
 
 interface QuestionsState {
   items: IQuestion[];
@@ -30,6 +30,17 @@ export const questionsSlice = createSlice({
       state.items = questions;
     });
     builder.addCase(fetchQuestions.rejected, (state) => {
+      state.fetchLoading = false;
+    });
+
+    builder.addCase(fetchUserQuestions.pending, (state) => {
+      state.fetchLoading = true;
+    });
+    builder.addCase(fetchUserQuestions.fulfilled, (state, {payload: questions}) => {
+      state.fetchLoading = false;
+      state.items = questions;
+    });
+    builder.addCase(fetchUserQuestions.rejected, (state) => {
       state.fetchLoading = false;
     });
 

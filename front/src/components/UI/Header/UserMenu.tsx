@@ -4,6 +4,7 @@ import { IUser } from '../../../types';
 import { useAppDispatch } from '../../../app/hooks';
 import { unsetUser } from '../../../features/users/usersSlice';
 import { fetchQuestions } from '../../../features/questions/questionsThunk';
+import { Link } from 'react-router-dom';
 
 interface Props {
   user: IUser;
@@ -56,13 +57,13 @@ const UserMenu: React.FC<Props> = ({user}) => {
           <>
             <MenuItem>Admin panel</MenuItem>
             <MenuItem>Add question</MenuItem>
-            <MenuItem>My account</MenuItem>
+            <MenuItem component={Link} to="/profile">My account</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </>
         ) : (
           <>
-            <MenuItem>My questions</MenuItem>
-            <MenuItem>My account</MenuItem>
+            <MenuItem component={Link} to="/my-questions">My questions</MenuItem>
+            <MenuItem component={Link} to="/profile">My account</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </>
         )}

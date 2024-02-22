@@ -6,6 +6,8 @@ import Questions from './features/questions/Questions';
 import OneQuestion from './features/questions/OneQuestion';
 import Register from './features/users/Register';
 import Login from './features/users/Login';
+import UserPage from './features/users/UserPage';
+import UserQuestions from './features/users/UserQuestions';
 
 const App = () => {
   return (
@@ -19,8 +21,10 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Questions/>}/>
             <Route path="/questions/:id" element={<OneQuestion/>}/>
-            <Route path="/register" element={<Register />}/>
-            <Route path="/login" element={<Login />}/>
+            <Route path="/register" element={<Register/>}/>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/profile" element={<UserPage/>}/>
+            <Route path="/my-questions" element={<UserQuestions />} />
           </Routes>
         </Container>
       </main>

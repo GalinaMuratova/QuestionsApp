@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ILogin, IUser } from '../../types';
-import { fetchUserLogin, login, register } from './usersThunk';
+import { fetchUserLogin, fetchUserProfile, login, register, resetPassword } from './usersThunk';
 import { RootState } from '../../app/store';
 
 interface UserState {
   user: IUser | null,
   login: ILogin | null;
+  message: string;
   fetchLoginLoading: boolean;
   registerLoading: boolean,
   registerError: boolean,
@@ -15,6 +16,7 @@ interface UserState {
 const initialState: UserState = {
   user: null,
   login: null,
+  message: '',
   fetchLoginLoading: false,
   registerLoading: false,
   registerError: false,
@@ -28,6 +30,9 @@ export const usersSlice = createSlice({
     unsetUser: (state) => {
       state.user = null;
     },
+    clearMessage(state) {
+      state.message = '';
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserLogin.pending, (state) => {
@@ -38,6 +43,17 @@ export const usersSlice = createSlice({
       state.login = login;
     });
     builder.addCase(fetchUserLogin.rejected, (state) => {
+      state.fetchLoginLoading = false;
+    });
+
+    builder.addCase(fetchUserProfile.pending, (state) => {
+      state.fetchLoginLoading = true;
+    });
+    builder.addCase(fetchUserProfile.fulfilled, (state, {payload: profile}) => {
+      state.fetchLoginLoading = false;
+      state.user = profile;
+    });
+    builder.addCase(fetchUserProfile.rejected, (state) => {
       state.fetchLoginLoading = false;
     });
 
@@ -64,12 +80,24 @@ export const usersSlice = createSlice({
     builder.addCase(login.rejected, (state) => {
       state.loginLoading = false;
     });
+
+    builder.addCase(resetPassword.pending, (state) => {
+      state.message = '';
+    });
+    builder.addCase(resetPassword.fulfilled, (state, {payload: message}) => {
+      state.message = message.message;
+    });
+    builder.addCase(resetPassword.rejected, (state) => {
+      state.message = 'Error';
+    });
   }
 });
 
 export const usersReducer = usersSlice.reducer;
 export const {unsetUser} = usersSlice.actions;
+export const {clearMessage} = usersSlice.actions;
 export const selectUser = (state: RootState) => state.users.user;
 export const selectLogin = (state: RootState) => state.users.login;
+export const selectMessage = (state: RootState) => state.users.message;
 export const selectRegisterLoading = (state: RootState) => state.users.registerLoading;
 export const selectLoginLoading = (state: RootState) => state.users.loginLoading;

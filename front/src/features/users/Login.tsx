@@ -1,7 +1,21 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { LoginMutation } from '../../types';
-import { Avatar, Box, Button, CircularProgress, Container, Grid, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, TextField, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  Link,
+  OutlinedInput,
+  TextField,
+  Typography
+} from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -25,7 +39,6 @@ const Login = () => {
   };
 
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-
     const {name, value} = event.target;
     setState(prevState => ({...prevState, [name]: value}));
   };
@@ -92,10 +105,10 @@ const Login = () => {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{mt: 3, mb: 2}}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={24} /> : 'Sign In'}
+            {loading ? <CircularProgress size={24}/> : 'Sign In'}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>

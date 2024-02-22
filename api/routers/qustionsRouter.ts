@@ -6,24 +6,27 @@ import User from "../models/User";
 
 const questionsRouter = express.Router();
 
+
 questionsRouter.get('/', async (req, res) => {
     try {
+        const questions = await Question.find({hidden: false});
+        return res.send(questions);
+    } catch {
+        return res.sendStatus(500);
+    }
+});
+
+questionsRouter.get('/user/questions', async (req, res) => {
+    try {
         const token = req.get('Authorization');
-        const user = await User.findOne({token});
+        const user = await User.findOne({ token });
 
-        let query: any = {hidden: false};
-
-        if (user) {
-            query = {
-                $or: [
-                    {author: user._id},
-                    {hidden: false}
-                ]
-            };
+        if (!user) {
+            return res.sendStatus(401);
         }
 
         const questions = await Question
-            .find(query)
+            .find({ author: user._id })
             .populate({
                 path: 'author',
                 select: 'firstName'
@@ -32,14 +35,14 @@ questionsRouter.get('/', async (req, res) => {
                 path: 'answers.author',
                 select: 'firstName'
             })
-            .sort({date: -1});
+            .sort({ date: -1 });
 
         return res.send(questions);
-    } catch {
+    } catch (error) {
+        console.error(error);
         return res.sendStatus(500);
     }
 });
-
 
 questionsRouter.get('/:id', async (req, res) => {
     try {

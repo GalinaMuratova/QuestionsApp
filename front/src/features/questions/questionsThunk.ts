@@ -10,6 +10,14 @@ export const fetchQuestions = createAsyncThunk<IQuestion[]>(
   }
 );
 
+export const fetchUserQuestions = createAsyncThunk<IQuestion[]>(
+  'questions/fetchUserQuestions',
+  async () => {
+    const response = await axiosApi.get<IQuestion[]>('/questions/user/questions');
+    return response.data;
+  }
+)
+
 export const fetchOneQuestion = createAsyncThunk<IQuestion, string>(
   'questions/fetchOne',
   async (id) => {
