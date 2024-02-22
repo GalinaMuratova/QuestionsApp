@@ -63,9 +63,8 @@ const Questions = () => {
                   {questions.map(question => (
                     <TableRow key={question._id}>
                       <StyledTableCell>
-                        <Grid item xs={12} sm={6} md={4} lg={3} style={{fontSize: '18px'}} component={Link}
-                              to={'/questions/' + question._id}>
-                          {question.title}
+                        <Grid item xs={12} sm={6} md={4} lg={3} style={{fontSize: '18px'}} component={Link} to={'/questions/' + question._id}>
+                          {question.title} ?
                         </Grid>
                       </StyledTableCell>
                     </TableRow>

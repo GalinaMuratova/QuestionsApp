@@ -7,7 +7,6 @@ interface Props {
 
 const AnswerForm: React.FC<Props> = ({ onSubmit }) => {
   const [answer, setAnswer] = useState('');
-  console.log(answer);
 
   const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAnswer(event.target.value);

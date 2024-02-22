@@ -33,3 +33,32 @@ export const submitAnswer = createAsyncThunk<IQuestion, { id: string; title: str
     return response.data;
   }
 );
+
+export const createQuestion = createAsyncThunk<IQuestion, { title: string }>(
+  'questions/createQuestion',
+  async ({ title }) => {
+    const response = await axiosApi.post<IQuestion>('/questions', { title });
+    return response.data;
+  }
+);
+
+export const editQueston = createAsyncThunk<IQuestion, {id:string; title: string}>(
+  'questions/editQuestion',
+  async ({id, title}) => {
+    const response = await axiosApi.put<IQuestion>(`/questions/${id}`, { title });
+    return response.data;
+
+  }
+)
+
+export const changeQuestionPublish = createAsyncThunk<void, string>(
+  'questions/changePublish',
+  async (id) => {
+    await axiosApi.patch(`/questions/${id}`);
+  },
+);
+
+export const deleteQuestion = createAsyncThunk<void, string>('questions/delete', async (id) => {
+  await axiosApi.delete(`/questions/${id}`);
+});
+
