@@ -19,6 +19,22 @@ export const fetchUserProfile = createAsyncThunk<IUser>(
   }
 );
 
+export const fetchOneUser = createAsyncThunk<IUser, string>(
+  'users/fetchOneUser',
+  async (id) => {
+    const response = await axiosApi.get<IUser>(`/users/${id}`);
+    return response.data;
+  }
+);
+
+export const fetchAllUsers = createAsyncThunk<IUser[]>(
+  'users/fetchAllUsers',
+  async () => {
+    const response = await axiosApi.get<IUser[]>('/users');
+    return response.data;
+  }
+);
+
 export const register = createAsyncThunk<RegisterResponse, RegisterMutation>(
   'users/register',
   async (registerMutation: RegisterMutation) => {
@@ -45,13 +61,6 @@ export const login = createAsyncThunk<IUser, LoginMutation>(
   }
 );
 
-export const logout = createAsyncThunk<void, void>(
-  '/change/logout',
-  async (_, {dispatch}) => {
-    await axiosApi.delete('/users/sessions');
-    dispatch(unsetUser());
-  });
-
 export const updateProfilePhoto = createAsyncThunk<void, FormData>(
   'users/updateProfilePhoto',
   async (formData: FormData) => {
@@ -66,4 +75,31 @@ export const resetPassword = createAsyncThunk<{ message: string }, string>(
     return response.data
   }
 );
+
+export const authorizeUser = createAsyncThunk<void, string>(
+  'users/authorizeUser',
+  async (id) => {
+    await axiosApi.patch(`/users/${id}/authorize`);
+  }
+);
+
+export const resetDefaultPassword = createAsyncThunk<void, string>(
+  'users/resetDefaultPassword',
+  async (id) => {
+    await axiosApi.patch(`/users/reset-password/${id}`);
+  }
+);
+
+export const logout = createAsyncThunk<void, void>(
+  'users/logout',
+  async (_, {dispatch}) => {
+    await axiosApi.delete('/users/change/logout');
+    dispatch(unsetUser());
+  });
+
+export const deleteUser = createAsyncThunk<void, string>(
+  'users/deleteUser',
+  async (id) => {
+    await axiosApi.delete(`/users/${id}`);
+  });
 

@@ -213,6 +213,7 @@ usersRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
         return next(e);
     }
 });
+
 usersRouter.delete('/change/logout', async (req, res, next) => {
     try {
       const token = req.get('Authorization');

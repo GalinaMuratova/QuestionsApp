@@ -20,9 +20,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import { Link as NavLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useEffect, useState } from 'react';
-import { selectQuestions, selectQuestionsLoading } from '../questions/questionsSlice';
-import { fetchUserQuestions, createQuestion, changeQuestionPublish, deleteQuestion, editQueston } from '../questions/questionsThunk';
-import { selectUser } from './usersSlice';
+import { selectQuestions, selectQuestionsLoading } from './questionsSlice';
+import { fetchUserQuestions, createQuestion, changeQuestionPublish, deleteQuestion, editQueston } from './questionsThunk';
+import { selectUser } from '../users/usersSlice';
 
 
 const Link = styled(NavLink)({
@@ -151,7 +151,7 @@ const UserQuestions = () => {
                           />
                         ) : (
                           <Grid item xs={12} sm={6} md={8} style={{fontSize: '18px'}} component={Link} to={'/questions/' + question._id}>
-                            {question.title}
+                            {question.title} ?
                           </Grid>
                         )}
                       </StyledTableCell>

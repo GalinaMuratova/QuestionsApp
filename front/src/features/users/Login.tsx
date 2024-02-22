@@ -20,7 +20,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectLoginLoading } from './usersSlice';
-import { login } from './usersThunk';
+import { login, register } from './usersThunk';
 
 const Login = () => {
   const [state, setState] = useState<LoginMutation>({
@@ -45,8 +45,13 @@ const Login = () => {
 
   const submitFormHandler = async (event: React.FormEvent) => {
     event.preventDefault();
-    await dispatch(login(state)).unwrap();
-    navigate('/');
+    try {
+      await dispatch(login(state)).unwrap();
+      navigate('/');
+    } catch (e) {
+      //шмашибка
+    }
+
   };
 
   return (

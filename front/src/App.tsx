@@ -7,7 +7,9 @@ import OneQuestion from './features/questions/OneQuestion';
 import Register from './features/users/Register';
 import Login from './features/users/Login';
 import UserPage from './features/users/UserPage';
-import UserQuestions from './features/users/UserQuestions';
+import UserQuestions from './features/questions/UserQuestions';
+import AdminPanel from './features/admin/AdminPanel';
+import DetailUserInformation from './features/admin/DetailUserInformation';
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
             <Route path="/login" element={<Login/>}/>
             <Route path="/profile" element={<UserPage/>}/>
             <Route path="/my-questions" element={<UserQuestions />} />
+            <Route path="/admin-panel" element={<AdminPanel />} />
+            <Route path="/user-information/:id" element={<DetailUserInformation />} />
           </Routes>
         </Container>
       </main>

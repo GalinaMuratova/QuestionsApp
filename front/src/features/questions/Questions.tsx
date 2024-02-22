@@ -70,7 +70,6 @@ const Questions = () => {
                     </TableRow>
                   ))}
                 </TableBody>
-
               </Table>
             </TableContainer>
           </Grid>

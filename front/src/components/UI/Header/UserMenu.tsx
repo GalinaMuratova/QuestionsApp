@@ -5,6 +5,7 @@ import { useAppDispatch } from '../../../app/hooks';
 import { unsetUser } from '../../../features/users/usersSlice';
 import { fetchQuestions } from '../../../features/questions/questionsThunk';
 import { Link } from 'react-router-dom';
+import { logout } from '../../../features/users/usersThunk';
 
 interface Props {
   user: IUser;
@@ -21,9 +22,10 @@ const UserMenu: React.FC<Props> = ({user}) => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    dispatch(unsetUser());
-    dispatch(fetchQuestions())
+  const handleLogout = async() => {
+    await dispatch(logout());
+    await dispatch(unsetUser());
+    await dispatch(fetchQuestions())
   };
 
   let avatarImage = 'http://localhost:8000' + '/images/' + user.image;
@@ -55,8 +57,8 @@ const UserMenu: React.FC<Props> = ({user}) => {
       >
         {user.role === 'admin' ? (
           <>
-            <MenuItem>Admin panel</MenuItem>
-            <MenuItem>Add question</MenuItem>
+            <MenuItem component={Link} to="/admin-panel">Admin panel</MenuItem>
+            <MenuItem component={Link} to="/my-questions">My questions</MenuItem>
             <MenuItem component={Link} to="/profile">My account</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </>
