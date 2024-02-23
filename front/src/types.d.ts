@@ -31,6 +31,16 @@ export interface RegisterMutation {
   userLogin:string;
 }
 
+export interface RegisterAdminMutation {
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  birthYear: string;
+  phoneNumber: string;
+  image: string | null;
+  userLogin:string;
+}
+
 export interface RegisterResponse {
   user: IUser;
   message: string;

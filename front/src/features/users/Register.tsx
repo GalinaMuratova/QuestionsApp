@@ -35,7 +35,6 @@ const Register = () => {
     phoneNumber: '',
     userLogin: ''
   });
-
   const [passwordError, setPasswordError] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);

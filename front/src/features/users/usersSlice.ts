@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ILogin, IUser } from '../../types';
 import {
+  createUser,
   fetchAllUsers,
   fetchOneUser,
   fetchUserLogin,
@@ -23,6 +24,8 @@ interface UserState {
   registerLoading: boolean,
   registerError: boolean,
   loginLoading: boolean,
+  createLoading:boolean,
+  createError: boolean,
 }
 
 const initialState: UserState = {
@@ -36,7 +39,9 @@ const initialState: UserState = {
   fetchLoginLoading: false,
   registerLoading: false,
   registerError: false,
-  loginLoading: false
+  loginLoading: false,
+  createLoading: false,
+  createError: false,
 };
 
 export const usersSlice = createSlice({
@@ -108,6 +113,18 @@ export const usersSlice = createSlice({
       state.registerError = true;
     });
 
+    builder.addCase(createUser.pending, (state) => {
+      state.createLoading = true;
+      state.createError = false;
+    });
+    builder.addCase(createUser.fulfilled, (state) => {
+      state.createLoading = false;
+    });
+    builder.addCase(createUser.rejected, (state) => {
+      state.createLoading = false;
+      state.createError = true;
+    });
+
     builder.addCase(login.pending, (state) => {
       state.loginLoading = true;
     });
@@ -137,8 +154,9 @@ export const {clearMessage} = usersSlice.actions;
 export const selectUser = (state: RootState) => state.users.user;
 export const selectDetailUser = (state: RootState) => state.users.detailUser;
 export const selectAllUsers = (state: RootState) => state.users.users;
-export const selectOneUserLoading = (state: RootState) => state.users.fetchOneUserLoading;
 export const selectLogin = (state: RootState) => state.users.login;
 export const selectMessage = (state: RootState) => state.users.message;
 export const selectRegisterLoading = (state: RootState) => state.users.registerLoading;
 export const selectLoginLoading = (state: RootState) => state.users.loginLoading;
+export const selectOneUserLoading = (state: RootState) => state.users.fetchOneUserLoading;
+export const selectCreateLoading = (state: RootState) => state.users.createLoading;

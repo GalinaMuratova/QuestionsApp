@@ -22,7 +22,7 @@ const UserMenu: React.FC<Props> = ({user}) => {
     setAnchorEl(null);
   };
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     await dispatch(logout());
     await dispatch(unsetUser());
     await dispatch(fetchQuestions())
@@ -56,20 +56,21 @@ const UserMenu: React.FC<Props> = ({user}) => {
         onClose={handleClose}
       >
         {user.role === 'admin' ? (
-          <>
-            <MenuItem component={Link} to="/admin-panel">Admin panel</MenuItem>
-            <MenuItem component={Link} to="/my-questions">My questions</MenuItem>
-            <MenuItem component={Link} to="/profile">My account</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          </>
+          [
+            <MenuItem key="admin-panel" component={Link} to="/admin-panel">Admin panel</MenuItem>,
+            <MenuItem key="my-questions" component={Link} to="/my-questions">My questions</MenuItem>,
+            <MenuItem key="profile" component={Link} to="/profile">My account</MenuItem>,
+            <MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>
+          ]
         ) : (
-          <>
-            <MenuItem component={Link} to="/my-questions">My questions</MenuItem>
-            <MenuItem component={Link} to="/profile">My account</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          </>
+          [
+            <MenuItem key="my-questions" component={Link} to="/my-questions">My questions</MenuItem>,
+            <MenuItem key="profile" component={Link} to="/profile">My account</MenuItem>,
+            <MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>
+          ]
         )}
       </Menu>
+
     </>
   );
 };

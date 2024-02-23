@@ -4,6 +4,7 @@ import auth, { RequestWithUser } from "../middleware/auth";
 import permit from "../middleware/permit";
 import { imagesUpload } from "../multer";
 import User from "../models/User";
+import Question from "../models/Questions";
 
 const usersRouter = express.Router();
 
@@ -203,12 +204,17 @@ usersRouter.patch('/:id/authorize', auth, permit('admin'), async (req, res, next
 
 usersRouter.delete('/:id', auth, permit('admin'), async (req, res, next) => {
     try {
-        const user = await User.findById(req.params.id);
+        const userId = req.params.id;
+
+        await Question.deleteMany({ 'author': userId });
+
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).send({ error: 'User not found' });
         }
         await user.deleteOne();
-        return res.send({ message: 'User deleted successfully' });
+
+        return res.send({ message: 'User and associated questions deleted successfully' });
     } catch (e) {
         return next(e);
     }

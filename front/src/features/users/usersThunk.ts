@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axiosApi from '../../axiosApi';
-import { ILogin, IUser, LoginMutation, RegisterMutation, RegisterResponse } from '../../types';
+import { ILogin, IUser, LoginMutation, RegisterAdminMutation, RegisterMutation, RegisterResponse } from '../../types';
 import { unsetUser } from './usersSlice';
 
 export const fetchUserLogin = createAsyncThunk<ILogin, string>(
@@ -52,6 +52,26 @@ export const register = createAsyncThunk<RegisterResponse, RegisterMutation>(
     return response.data;
   }
 );
+
+export const createUser = createAsyncThunk<RegisterResponse, RegisterAdminMutation>(
+  'users/createUser',
+  async (registerAdminMutation: RegisterAdminMutation) => {
+    const formData = new FormData();
+
+    const keys = Object.keys(registerAdminMutation) as (keyof RegisterAdminMutation)[];
+
+    keys.forEach((key) => {
+      const value = registerAdminMutation[key];
+      if (value !== null) {
+        formData.append(key, value);
+      }
+    });
+
+    const response = await axiosApi.post<RegisterResponse>('/users/admin', formData);
+    return response.data;
+  }
+);
+
 
 export const login = createAsyncThunk<IUser, LoginMutation>(
   'users/login',

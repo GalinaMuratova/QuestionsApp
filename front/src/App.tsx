@@ -10,6 +10,7 @@ import UserPage from './features/users/UserPage';
 import UserQuestions from './features/questions/UserQuestions';
 import AdminPanel from './features/admin/AdminPanel';
 import DetailUserInformation from './features/admin/DetailUserInformation';
+import AddNewUser from './features/admin/AddNewUser';
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/my-questions" element={<UserQuestions />} />
             <Route path="/admin-panel" element={<AdminPanel />} />
             <Route path="/user-information/:id" element={<DetailUserInformation />} />
+            <Route path="/add-new-user" element={<AddNewUser />}/>
           </Routes>
         </Container>
       </main>

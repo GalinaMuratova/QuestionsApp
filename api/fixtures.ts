@@ -26,7 +26,7 @@ const run = async () => {
       statusUser: true,
       userLogin:'a.may',
       password: '123',
-      image:'anna.jpg',
+      image:'anna.jpeg',
       token: crypto.randomUUID(),
       role: 'user',
     },
