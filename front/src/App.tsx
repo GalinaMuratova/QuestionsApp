@@ -11,6 +11,7 @@ import UserQuestions from './features/questions/UserQuestions';
 import AdminPanel from './features/admin/AdminPanel';
 import DetailUserInformation from './features/admin/DetailUserInformation';
 import AddNewUser from './features/admin/AddNewUser';
+import EditUser from './features/admin/EditUser';
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
             <Route path="/admin-panel" element={<AdminPanel />} />
             <Route path="/user-information/:id" element={<DetailUserInformation />} />
             <Route path="/add-new-user" element={<AddNewUser />}/>
+            <Route path="/edit/:id" element={<EditUser />} />
           </Routes>
         </Container>
       </main>

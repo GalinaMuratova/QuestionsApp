@@ -92,6 +92,11 @@ questionsRouter.post('/:id/answers', auth, async (req, res, next) => {
             return res.sendStatus(404);
         }
 
+        const existingAnswer = question.answers.find(answer => String(answer.author) === String(user._id));
+        if (existingAnswer) {
+            return res.status(400).json({ error: 'You can only answer once' });
+        }
+
         const currentDate = new Date();
         const newAnswer = {
             author: user._id,

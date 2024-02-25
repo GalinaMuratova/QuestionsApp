@@ -65,9 +65,35 @@ export interface IUser {
   role: 'user' | 'admin';
 }
 
+export interface IUserMutation {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  birthYear: Date;
+  phoneNumber: string;
+  image: File | null;
+  userLogin:string;
+}
+
 export interface ILogin{
   exists: boolean;
 }
 
+export interface ValidationError {
+  errors: {
+    [key: string]: {
+      name: string;
+      message: string;
+    };
+  };
+  message: string;
+  name: string;
+  _message: string;
+}
+
+export interface GlobalError {
+  error: string;
+}
 
 

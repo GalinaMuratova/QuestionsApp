@@ -1,7 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axiosApi from '../../axiosApi';
-import { ILogin, IUser, LoginMutation, RegisterAdminMutation, RegisterMutation, RegisterResponse } from '../../types';
+import {
+  GlobalError,
+  ILogin,
+  IUser,
+  IUserMutation,
+  LoginMutation,
+  RegisterAdminMutation,
+  RegisterMutation,
+  RegisterResponse,
+  ValidationError
+} from '../../types';
 import { unsetUser } from './usersSlice';
+import { isAxiosError } from 'axios';
 
 export const fetchUserLogin = createAsyncThunk<ILogin, string>(
   'users/fetchUserLogin',
@@ -35,10 +46,11 @@ export const fetchAllUsers = createAsyncThunk<IUser[]>(
   }
 );
 
-export const register = createAsyncThunk<RegisterResponse, RegisterMutation>(
+export const register = createAsyncThunk<RegisterResponse, RegisterMutation, { rejectValue: ValidationError | GlobalError }>(
   'users/register',
-  async (registerMutation: RegisterMutation) => {
-    const formData = new FormData();
+  async (registerMutation: RegisterMutation, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
 
     const keys = Object.keys(registerMutation) as (keyof RegisterMutation)[];
 
@@ -50,34 +62,78 @@ export const register = createAsyncThunk<RegisterResponse, RegisterMutation>(
     });
     const response = await axiosApi.post<RegisterResponse>('/users', formData);
     return response.data;
+    } catch(e) {
+      if (isAxiosError(e) && e.response && e.response.status === 400) {
+        return rejectWithValue(e.response.data);
+      }
+  
+      throw e;
+    }
   }
 );
 
-export const createUser = createAsyncThunk<RegisterResponse, RegisterAdminMutation>(
+export const createUser = createAsyncThunk<RegisterResponse, RegisterAdminMutation, { rejectValue: ValidationError | GlobalError }>(
   'users/createUser',
-  async (registerAdminMutation: RegisterAdminMutation) => {
+  async (registerAdminMutation: RegisterAdminMutation, { rejectWithValue}) => {
+    try {
+      const formData = new FormData();
+
+      const keys = Object.keys(registerAdminMutation) as (keyof RegisterAdminMutation)[];
+
+      keys.forEach((key) => {
+        const value = registerAdminMutation[key];
+        if (value !== null) {
+          formData.append(key, value);
+        }
+      });
+
+      const response = await axiosApi.post<RegisterResponse>('/users/admin', formData);
+      return response.data;
+    } catch (e) {
+      if (isAxiosError(e) && e.response && e.response.status === 400) {
+        return rejectWithValue(e.response.data);
+      }
+      throw e;
+    }
+  }
+);
+
+export const editUser = createAsyncThunk<IUser, IUserMutation>(
+  'users/editUser',
+  async (editAdminMutation: IUserMutation) => {
     const formData = new FormData();
 
-    const keys = Object.keys(registerAdminMutation) as (keyof RegisterAdminMutation)[];
+    const keys = Object.keys(editAdminMutation) as (keyof IUserMutation)[];
 
     keys.forEach((key) => {
-      const value = registerAdminMutation[key];
+      const value = editAdminMutation[key];
+
       if (value !== null) {
-        formData.append(key, value);
+        if (typeof value === 'string' || value instanceof Date) {
+          formData.append(key, value.toString());
+        } else if (value instanceof File) {
+          formData.append(key, value);
+        }
       }
     });
 
-    const response = await axiosApi.post<RegisterResponse>('/users/admin', formData);
+    const response = await axiosApi.put<IUser>(`/users/${editAdminMutation._id}`, formData);
     return response.data;
   }
 );
 
-
-export const login = createAsyncThunk<IUser, LoginMutation>(
+export const login = createAsyncThunk<IUser, LoginMutation, { rejectValue: GlobalError }>(
   'users/login',
-  async (loginMutation) => {
-    const response = await axiosApi.post<RegisterResponse>('/users/sessions', loginMutation);
-    return response.data.user;
+  async (loginMutation, {rejectWithValue}) => {
+    try {
+      const response = await axiosApi.post<RegisterResponse>('/users/sessions', loginMutation);
+      return response.data.user;
+    } catch (e) {
+      if (isAxiosError(e) && e.response && e.response.status === 400) {
+        return rejectWithValue(e.response.data);
+      }
+      throw e;
+    }
   }
 );
 

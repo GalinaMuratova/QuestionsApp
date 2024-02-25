@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ILogin, IUser } from '../../types';
+import { GlobalError, ILogin, IUser, ValidationError } from '../../types';
 import {
-  createUser,
+  createUser, editUser,
   fetchAllUsers,
   fetchOneUser,
   fetchUserLogin,
@@ -13,19 +13,21 @@ import {
 import { RootState } from '../../app/store';
 
 interface UserState {
-  user: IUser | null,
-  detailUser: IUser | null,
-  users: IUser[],
+  user: IUser | null;
+  detailUser: IUser | null;
+  users: IUser[];
   login: ILogin | null;
   message: string;
   fetchLoginLoading: boolean;
   fetchAllUsersLoading: boolean;
   fetchOneUserLoading:boolean;
-  registerLoading: boolean,
-  registerError: boolean,
-  loginLoading: boolean,
-  createLoading:boolean,
-  createError: boolean,
+  registerLoading: boolean;
+  registerError: ValidationError | null | GlobalError;
+  loginLoading: boolean;
+  loginError:  GlobalError | null;
+  createLoading:boolean;
+  createError: ValidationError | null | GlobalError;
+  editLoading: boolean;
 }
 
 const initialState: UserState = {
@@ -38,10 +40,12 @@ const initialState: UserState = {
   fetchOneUserLoading: false,
   fetchLoginLoading: false,
   registerLoading: false,
-  registerError: false,
+  registerError: null,
   loginLoading: false,
   createLoading: false,
-  createError: false,
+  createError: null,
+  editLoading: false,
+  loginError: null
 };
 
 export const usersSlice = createSlice({
@@ -102,38 +106,50 @@ export const usersSlice = createSlice({
 
     builder.addCase(register.pending, (state) => {
       state.registerLoading = true;
-      state.registerError = false;
+      state.registerError = null;
     });
     builder.addCase(register.fulfilled, (state, {payload: userResponse}) => {
       state.registerLoading = false;
       state.user = userResponse.user;
     });
-    builder.addCase(register.rejected, (state) => {
+    builder.addCase(register.rejected, (state,  {payload: error}) => {
       state.registerLoading = false;
-      state.registerError = true;
+      state.registerError = error || null;
     });
 
     builder.addCase(createUser.pending, (state) => {
       state.createLoading = true;
-      state.createError = false;
+      state.createError = null;
     });
     builder.addCase(createUser.fulfilled, (state) => {
       state.createLoading = false;
     });
-    builder.addCase(createUser.rejected, (state) => {
+    builder.addCase(createUser.rejected, (state, {payload: error}) => {
       state.createLoading = false;
-      state.createError = true;
+      state.createError = error || null;
+    });
+
+    builder.addCase(editUser.pending, (state) => {
+      state.editLoading = true;
+    });
+    builder.addCase(editUser.fulfilled, (state) => {
+      state.editLoading = false;
+    });
+    builder.addCase(editUser.rejected, (state) => {
+      state.editLoading = false;
     });
 
     builder.addCase(login.pending, (state) => {
       state.loginLoading = true;
+      state.loginError = null;
     });
     builder.addCase(login.fulfilled, (state, {payload: user}) => {
       state.loginLoading = false;
       state.user = user;
     });
-    builder.addCase(login.rejected, (state) => {
+    builder.addCase(login.rejected, (state, {payload: error}) => {
       state.loginLoading = false;
+      state.loginError = error || null;
     });
 
     builder.addCase(resetPassword.pending, (state) => {
@@ -160,3 +176,7 @@ export const selectRegisterLoading = (state: RootState) => state.users.registerL
 export const selectLoginLoading = (state: RootState) => state.users.loginLoading;
 export const selectOneUserLoading = (state: RootState) => state.users.fetchOneUserLoading;
 export const selectCreateLoading = (state: RootState) => state.users.createLoading;
+export const selectEditUserLoading = (state: RootState) => state.users.editLoading;
+export const selectRegisterError = (state: RootState) => state.users.registerError;
+export const selectLoginError = (state: RootState) => state.users.loginError;
+export const selectCreateError = (state: RootState) => state.users.createError;

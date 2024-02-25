@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axiosApi from '../../axiosApi';
-import { IQuestion } from '../../types';
+import { GlobalError, IQuestion } from '../../types';
+import { isAxiosError } from 'axios';
 
 export const fetchQuestions = createAsyncThunk<IQuestion[]>(
   'questions/fetchAll',
@@ -26,11 +27,18 @@ export const fetchOneQuestion = createAsyncThunk<IQuestion, string>(
   }
 );
 
-export const submitAnswer = createAsyncThunk<IQuestion, { id: string; title: string }>(
+export const submitAnswer = createAsyncThunk<IQuestion, { id: string; title: string },  { rejectValue: GlobalError }>(
   'questions/submitAnswer',
-  async ({ id, title }) => {
-    const response = await axiosApi.post<IQuestion>(`/questions/${id}/answers`, { title });
-    return response.data;
+  async ({ id, title }, {rejectWithValue}) => {
+    try {
+      const response = await axiosApi.post<IQuestion>(`/questions/${id}/answers`, { title });
+      return response.data;
+    } catch (e) {
+      if (isAxiosError(e) && e.response && e.response.status === 400) {
+        return rejectWithValue(e.response.data);
+      }
+      throw e;
+    }
   }
 );
 

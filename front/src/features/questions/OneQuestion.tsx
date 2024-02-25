@@ -29,7 +29,6 @@ const OneQuestion = () => {
     }
   };
 
-
   if (!question) {
     return <Typography variant="h6">Question not found</Typography>;
   }

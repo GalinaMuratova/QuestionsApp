@@ -19,7 +19,7 @@ import {
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectLoginLoading } from './usersSlice';
+import { selectLoginError, selectLoginLoading } from './usersSlice';
 import { login, register } from './usersThunk';
 
 const Login = () => {
@@ -31,6 +31,7 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loading = useAppSelector(selectLoginLoading);
+  const error = useAppSelector(selectLoginError);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -105,6 +106,7 @@ const Login = () => {
                 onChange={inputChangeHandler}
               />
             </Grid>
+            {error && <Typography color="error">{error.error}</Typography>}
           </Grid>
           <Button
             type="submit"

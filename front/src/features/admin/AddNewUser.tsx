@@ -13,8 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { RegisterAdminMutation } from '../../types';
 import { createUser, fetchAllUsers, fetchUserLogin } from '../users/usersThunk';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectCreateLoading, selectLogin, selectUser } from '../users/usersSlice';
-
+import { selectCreateError, selectCreateLoading, selectLogin, selectUser } from '../users/usersSlice';
 
 const AddNewUser = () => {
   const [state, setState] = useState<RegisterAdminMutation>({
@@ -30,6 +29,7 @@ const AddNewUser = () => {
   const user = useAppSelector(selectUser);
   const loginCheck = useAppSelector(selectLogin);
   const loading = useAppSelector(selectCreateLoading);
+  const error = useAppSelector(selectCreateError);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -100,6 +100,20 @@ const AddNewUser = () => {
     }
   };
 
+  const getFieldError = (name: string) => {
+    try {
+      if (error) {
+        if ('errors' in error) {
+          return error.errors[name]?.message;
+        } else {
+          return undefined;
+        }
+      }
+    } catch {
+      return undefined;
+    }
+  };
+
   return (
     <>
       <Container component="main" maxWidth="xs">
@@ -125,6 +139,7 @@ const AddNewUser = () => {
                   value={state.firstName}
                   onChange={inputChangeHandler}
                 />
+                {error && <Typography color="error">{getFieldError('firstName')}</Typography>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -135,6 +150,7 @@ const AddNewUser = () => {
                   value={state.lastName}
                   onChange={inputChangeHandler}
                 />
+                {error && <Typography color="error">{getFieldError('lastName')}</Typography>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -145,6 +161,7 @@ const AddNewUser = () => {
                   value={state.middleName}
                   onChange={inputChangeHandler}
                 />
+                {error && <Typography color="error">{getFieldError('middleName')}</Typography>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -155,6 +172,7 @@ const AddNewUser = () => {
                   value={state.phoneNumber}
                   onChange={inputChangeHandler}
                 />
+                {error && <Typography color="error">{getFieldError('phoneNumber')}</Typography>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -168,9 +186,11 @@ const AddNewUser = () => {
                     shrink: true,
                   }}
                 />
+                {error && <Typography color="error">{getFieldError('birthYear')}</Typography>}
               </Grid>
               <Grid item xs={12}>
                 <FileInput onChange={filesInputChangeHandler} name="image" label="image" />
+                {error && <Typography color="error">{getFieldError('image')}</Typography>}
               </Grid>
             </Grid>
             <Grid item xs={12} mb={2} mt={2}>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Typography } from '@mui/material';
+import { useAppSelector } from '../../../app/hooks';
+import { selectAnswerError } from '../../../features/questions/questionsSlice';
 
 interface Props {
   onSubmit: (answer: string) => void;
@@ -7,6 +9,7 @@ interface Props {
 
 const AnswerForm: React.FC<Props> = ({ onSubmit }) => {
   const [answer, setAnswer] = useState('');
+  const error = useAppSelector(selectAnswerError);
 
   const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAnswer(event.target.value);
@@ -30,6 +33,7 @@ const AnswerForm: React.FC<Props> = ({ onSubmit }) => {
         fullWidth
         name="answer"
       />
+      {error && <Typography color="error">{error.error}</Typography>}
       <Button type="submit" variant="contained" color="primary" style={{ marginTop: '10px' }}>
         Submit Answer
       </Button>

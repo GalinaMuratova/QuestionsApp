@@ -19,7 +19,7 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectLogin, selectRegisterLoading } from './usersSlice';
+import { selectLogin, selectRegisterLoading, selectRegisterError } from './usersSlice';
 import { fetchUserLogin, register } from './usersThunk';
 import FileInput from '../../components/UI/FileInput/FileInput';
 
@@ -38,6 +38,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const error = useAppSelector(selectRegisterError);
   const loginCheck = useAppSelector(selectLogin);
   const loading = useAppSelector(selectRegisterLoading);
   const dispatch = useAppDispatch();
@@ -98,6 +99,19 @@ const Register = () => {
     }
   };
   
+  const getFieldError = (name: string) => {
+    try {
+     if (error) {
+      if ('errors' in error) {
+        return error.errors[name]?.message;
+      } else {
+        return undefined;
+      }
+     }
+    } catch {
+      return undefined;
+    }
+  };
 
   const submitFormHandler = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -143,6 +157,7 @@ const Register = () => {
                 value={state.firstName}
                 onChange={inputChangeHandler}
               />
+              {error && <Typography color="error">{getFieldError('firstName')}</Typography>}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -153,6 +168,7 @@ const Register = () => {
                 value={state.lastName}
                 onChange={inputChangeHandler}
               />
+              {error && <Typography color="error">{getFieldError('lastName')}</Typography>}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -163,6 +179,7 @@ const Register = () => {
                 value={state.middleName}
                 onChange={inputChangeHandler}
               />
+              {error && <Typography color="error">{getFieldError('middleName')}</Typography>}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -173,6 +190,7 @@ const Register = () => {
                 value={state.phoneNumber}
                 onChange={inputChangeHandler}
               />
+              {error && <Typography color="error">{getFieldError('phoneNumber')}</Typography>}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -186,9 +204,11 @@ const Register = () => {
                   shrink: true,
                 }}
               />
+              {error && <Typography color="error">{getFieldError('birthYear')}</Typography>}
             </Grid>
             <Grid item xs={12}>
               <FileInput onChange={filesInputChangeHandler} name="image" label="image" />
+              {error && <Typography color="error">{getFieldError('image')}</Typography>}
             </Grid>
             <Grid item xs={12}>
               <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -213,6 +233,7 @@ const Register = () => {
                 value={state.password}
                 onChange={inputChangeHandler}
               />
+              {error && <Typography color="error">{getFieldError('password')}</Typography>}
             </Grid>
             <Grid item xs={12}>
               <InputLabel htmlFor="outlined-adornment-password">Confirm password</InputLabel>
@@ -237,6 +258,7 @@ const Register = () => {
                 value={state.passwordConfirm}
                 onChange={inputChangeHandler}
               />
+              {error && <Typography color="error">{getFieldError('passwordConfirm')}</Typography>}
             </Grid>
           </Grid>
           {passwordError && (
